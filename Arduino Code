@@ -1,0 +1,123 @@
+#include <SoftwareSerial.h> // Including BT Library
+SoftwareSerial BT (9, 10); // Defining pins of BT Module
+
+String BTval; // Creating variable to strore recieved value
+
+// Defining motors
+const int LeftForward = 2;
+const int LeftBackward = 3;
+const int RightForward = 4;
+const int RightBackward = 5;
+
+// Defining LEDs and Buzzer
+const int LED_L = 8;
+const int LED_R = 7;
+const int Buzzer = 11;
+
+void setup() { 
+  // Starting Serial Communication
+  Serial.begin(9600);
+  BT.begin(9600);
+  // Setting LEDs and Buzzer as OUTPUT
+  pinMode(LED_L, OUTPUT);
+  pinMode(LED_R, OUTPUT);
+  pinMode(Buzzer, OUTPUT);
+  // Waiting for BT to be connected
+  while (!Serial)
+  {
+    
+  }
+  // Initially making Buzzer to make no buzz
+  digitalWrite(Buzzer, HIGH);
+}
+
+// Following are specific commands for each motor when in certain direction
+void Forward(){
+  
+  digitalWrite(LeftForward, HIGH);
+  digitalWrite(LeftBackward, LOW);
+  digitalWrite(RightForward, HIGH);
+  digitalWrite(RightBackward, LOW);
+  
+  }
+
+void Right(){
+  
+  digitalWrite(LeftForward, HIGH);
+  digitalWrite(LeftBackward, LOW);
+  digitalWrite(RightForward, LOW);
+  digitalWrite(RightBackward, HIGH);
+  
+  }
+
+void Left(){
+  
+  digitalWrite(LeftForward, LOW);
+  digitalWrite(LeftBackward, HIGH);
+  digitalWrite(RightForward, HIGH);
+  digitalWrite(RightBackward, LOW);
+  
+  }
+
+void Back(){
+  
+  digitalWrite(LeftForward, LOW);
+  digitalWrite(LeftBackward, HIGH);
+  digitalWrite(RightForward, LOW);
+  digitalWrite(RightBackward, HIGH);
+  
+  }
+
+
+void Stop(){
+  
+  digitalWrite(LeftForward, LOW);
+  digitalWrite(LeftBackward, LOW);  
+  digitalWrite(RightForward, LOW);
+  digitalWrite(RightBackward, LOW);
+  
+  }
+
+void loop() { 
+  // If Bluetooth Communication is established
+  if (BT.available())
+    {   
+        BTval = BT.read();  
+        Serial.println(BTval); 
+
+        // If certain values are recieve, what the robot should do
+        if (BTval == "1")                
+        {
+          Forward();
+        }
+        if (BTval == "2")                
+        {
+          Right();
+        }
+        if (BTval == "3")                
+        {
+          Left();
+        }
+        if (BTval == "4")                
+        {
+          Back();
+        }
+        if (BTval == "0")
+        {
+          Stop();
+          digitalWrite(LED_L, LOW);
+          digitalWrite(LED_R, LOW);
+          digitalWrite(Buzzer, HIGH);
+        }
+        if (BTval == "5")
+        {
+          digitalWrite(Buzzer, LOW);
+        }
+        if (BTval == "6")
+        {
+          digitalWrite(LED_L, HIGH);
+          digitalWrite(LED_R, HIGH);
+        }
+        
+}
+}
